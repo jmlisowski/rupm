@@ -1,6 +1,7 @@
 extern crate reqwest;
 use dirs;
-use tar::Archive;
+//use tar::Archive;
+//use zip_extract crate
 use std::path::PathBuf;
 use std::io;
 use std::fs::{
@@ -20,12 +21,12 @@ fn download(link: &str, filename: &str) {
     let mut out = File::create(filename).expect("failed to create file");
     io::copy(&mut body.as_bytes(), &mut out).expect("failed to copy content");
 }
-fn extract(filename: &str) -> io::Result<()> {
+/*fn extract(filename: &str) -> io::Result<()> {
     let path = filename;
     let tar = File::open(path)?;
     let mut archive = Archive::new(tar);
     archive.unpack(rupmdir())
-}
+}*/
 pub fn check() -> bool {
     let dirpath = rupmdir();
     dirpath.exists()
@@ -37,12 +38,12 @@ pub fn test() {
     io::copy(&mut body.as_bytes(), &mut out).expect("failed to copy content");
 }
 pub fn install(pkg: &str) {
-    let link = format!("https://jmlisowski.github.io/rupm-packages/{}.tar", pkg);
+    let link = format!("https://raw.githubusercontent.com/jmlisowski/rupm-packages/main/{}.tar", pkg);
     let filename = format!("{}.tar", pkg);
     let link = link.as_str();
     let filename = filename.as_str();
-    download(&link, &filename);
-    extract(&filename).expect("failed to extract tarball");
+    download(link, &filename);
+    //extract(filename).expect("failed to extract tarball");
     remove_file(&filename).expect("failed to remove file");
 }
 
