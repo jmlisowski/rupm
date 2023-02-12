@@ -9,8 +9,6 @@ fn main() {
             lib::help();
         } else if &args[1] == "install" {
             lib::install(&args[2]);
-        } else if &args[1] == "test" {
-            lib::test();
         } else if &args[1] == "init" {
             lib::init();
         } else if &args[1] != "init" && !lib::check() {
