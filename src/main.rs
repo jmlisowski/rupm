@@ -22,6 +22,7 @@ fn main() {
     } else {
         if !lib::check() {
             println!("{}", "rupm not set up yet! run comand 'rupm init' to use rupm.".red().bold());
+            exit(1);
         }
         lib::help();
     }
