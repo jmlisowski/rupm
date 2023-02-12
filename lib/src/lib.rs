@@ -35,8 +35,11 @@ pub fn install(pkg: &str) {
     let link = link.as_str();
     let filename = filename.as_str();
 
+    println!("downloading {}.tar", &pkg);
     download(link, &filename);
+    println!("extracting {}.tar", &pkg);
     extract(filename).expect("failed to extract tarball");
+    println!("cleaning up");
     remove_file(&filename).expect("failed to remove file");
 }
 
