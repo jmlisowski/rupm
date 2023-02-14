@@ -12,7 +12,11 @@ fn main() {
         if &args[1] == "help" {
             lib::help();
         } else if &args[1] == "install" {
-            lib::install(&args[2]);
+            for (i, arg) in args.iter().enumerate() {
+                if i > 1 {
+                    lib::install(arg);
+                }
+            }
         } else if &args[1] == "init" {
             lib::init();
         } else if &args[1] == "update" {
