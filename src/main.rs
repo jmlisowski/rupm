@@ -15,6 +15,8 @@ fn main() {
             lib::install(&args[2]);
         } else if &args[1] == "init" {
             lib::init();
+        } else if &args[1] == "update" {
+            lib::update();
         } else {
             println!("{} '{}'", "couldn't recognize command".red().bold(), &args[1].red().bold());
             lib::help();
