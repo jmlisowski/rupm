@@ -1,3 +1,4 @@
 target/
+rupm_installer/target
 rupm-packages/
 .gitpod.yml
