@@ -1,3 +1,4 @@
+use lib::init;
 fn main() {
-    println!("Hello, world!");
+    init();
 }
