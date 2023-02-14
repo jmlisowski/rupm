@@ -38,7 +38,7 @@ pub fn check() -> bool {
     dirpath.exists()
 }
 pub fn install(pkg: &str) {
-    let link = format!("https://jmlisowski.github.io/rupm-packages/{}.tar", pkg);
+    let link = format!("https://raw.githubusercontent.com/jmlisowski/rupm-packages/main/{}.tar", pkg);
     let filename = format!("{}.tar", pkg);
     let link = link.as_str();
     let filename = filename.as_str();
