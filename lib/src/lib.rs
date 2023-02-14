@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use std::io::{self, Read};
 use std::fs::{
     File,
-    create_dir_all, remove_file,
+    remove_file,
 };
 
 fn rupmdir() -> PathBuf {
@@ -33,10 +33,6 @@ fn extract(filename: &str) -> io::Result<()> {
     let mut archive = Archive::new(tar);
     archive.unpack(rupmdir())
 }
-pub fn check() -> bool {
-    let dirpath = rupmdir();
-    dirpath.exists()
-}
 pub fn install(pkg: &str) {
     let link = format!("https://raw.githubusercontent.com/jmlisowski/rupm-packages/main/{}.tar", pkg);
     let filename = format!("{}.tar", pkg);
@@ -60,20 +56,8 @@ pub fn install(pkg: &str) {
         println!("{}",format!("{} is not a package!",&pkg).red().bold());
     }
 }
-pub fn init() {
-    let dirpath = rupmdir();
-    let binpath: PathBuf = (dirpath.to_string_lossy().to_string() + "/bin").into();
-    println!("creating rupm directory at: {:?}", dirpath);
-    println!("adding {:?} to PATH", binpath);
-
-    set_env::append("PATH", &binpath.to_str().unwrap()).expect("Couldn't find PATH");
-    create_dir_all(&binpath).expect("failed to make directory");
-
-    update();
-}
 pub fn help() {
-    println!("Commands for rupm: 
-    init | sets up rupm for use
+    println!("Commands for rupm:
     help | displays help
     install [package name] | installs a package
     remove [package name] | removes a package");
