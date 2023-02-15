@@ -13,6 +13,12 @@ fn main() {
                     lib::install(arg);
                 }
             }
+        } else if &args[1] == "remove" {
+            for (i, arg) in args.iter().enumerate() {
+                if i > 1 {
+                    lib::remove(arg);
+                }
+            }
         } else if &args[1] == "update" {
             lib::update();
         } else {

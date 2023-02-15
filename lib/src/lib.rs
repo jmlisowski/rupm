@@ -21,8 +21,7 @@ fn download(link: &str, filename: &str) {
 }
 pub fn update() {
     let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/packages.txt").into();
-    let filepath = filepath.to_string_lossy().to_string();
-    let filepath = filepath.as_str();
+    let filepath = filepath.to_str().unwrap();
     File::create(&filepath).expect("failed to create file");
     println!("updating package list");
     download("https://raw.githubusercontent.com/jmlisowski/rupm-packages/main/packages.txt", filepath);
@@ -35,12 +34,11 @@ fn extract(filename: &str) -> io::Result<()> {
 }
 pub fn install(pkg: &str) {
     let link = format!("https://raw.githubusercontent.com/jmlisowski/rupm-packages/main/{}.tar", pkg);
-    let filename = format!("{}.tar", pkg);
     let link = link.as_str();
+    let filename = format!("{}.tar", pkg);
     let filename = filename.as_str();
     let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/packages.txt").into();
-    let filepath = filepath.to_string_lossy().to_string();
-    let filepath = filepath.as_str();
+    let filepath = filepath.to_str().unwrap();
     update();
     let mut file = File::open(filepath).unwrap();
     let mut contents = String::new();
@@ -55,6 +53,18 @@ pub fn install(pkg: &str) {
     } else {
         println!("{}",format!("{} is not a package!",&pkg).red().bold());
     }
+}
+pub fn remove(pkg: &str) {
+    let binpath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/bin/").into();
+    let pkgpath: PathBuf = (binpath.to_string_lossy().to_string() + pkg).into();
+    let pkgpath = pkgpath.to_str().unwrap();
+    let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/packages.txt").into();
+    let filepath = filepath.to_str().unwrap();
+    update();
+    let mut file = File::open(filepath).unwrap();
+    let mut contents = String::new();
+    //if contents.contains(&pkg)
+    println!("{}",pkgpath);
 }
 pub fn help() {
     println!("Commands for rupm:
