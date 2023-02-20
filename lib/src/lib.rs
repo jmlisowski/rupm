@@ -1,4 +1,4 @@
-extern crate reqwest;
+use reqwest;
 use dirs;
 use colored::Colorize;
 use tar::Archive;
