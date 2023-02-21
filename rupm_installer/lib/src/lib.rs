@@ -94,5 +94,5 @@ pub fn init() {
 
     update();
     install("rupm");
-    println!("{}", "rupm is sccessfuly installed! You can delete this file and restart your command line.".green().bold());
+    println!("{}", "rupm is sccessfuly installed! You can delete this file and log out and log back in.".green().bold());
 }

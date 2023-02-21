@@ -28,7 +28,6 @@ fn get_package(name: &str) -> Option<Package> {
     let file = File::open(filepath).expect("unable to read file");
     let reader = BufReader::new(file);
     let packages: Vec<Package> = from_reader(reader).expect("cannot deserialize");
-    //println!("{:?}", packages);
     for package in packages {
         if package.package == name {
             return Some(package);
