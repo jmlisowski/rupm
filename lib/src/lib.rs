@@ -3,14 +3,25 @@ use dirs;
 use colored::Colorize;
 use tar::Archive;
 use serde::{Serialize, Deserialize};
-use ron::de::from_reader;
+use ron::{
+    de::from_reader,
+    ser::{
+        to_string_pretty,
+        PrettyConfig,
+    }
+};
 use std::{
     path::PathBuf,
     io::{
         self,
+        Seek,
+        SeekFrom,
         BufReader,
+        Write,
+        Read,
     },
     fs::{
+        OpenOptions,
         File,
         remove_file,
     },
@@ -20,6 +31,66 @@ use std::{
 struct Package {
     package: String,
     version: String,
+}
+struct Place {
+    exists: bool,
+    index: usize,
+}
+fn is_package_installed(package: &String) -> Place {
+    let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/installedpackages.ron").into();
+    let mut file = OpenOptions::new()
+        .read(true)        
+        .open(&filepath)
+        .unwrap();
+    let packages: Vec<Package> = from_reader(BufReader::new(&mut file)).unwrap();
+    for (i, pkg) in packages.iter().enumerate() {
+        if &pkg.package == package {
+            return Place {
+                exists: true,
+                index: i,
+            };
+        }
+    }
+    Place {
+        exists: false,
+        index: 0,
+    }
+}
+pub fn add_installed_package(package: String, version: String,) {
+    let data = Package {
+        package,
+        version,
+    };
+    let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/installedpackages.ron").into();
+    let mut file = OpenOptions::new()
+        .read(true)
+        .write(true)
+        .open(&filepath)
+        .unwrap();
+
+    let mut installedpackages = File::open(&filepath).expect("failed to open file");
+    let mut contents = String::new();
+    installedpackages.read_to_string(&mut contents).expect("failed to write to string");
+    let installedpkglist = match contents.chars().count() {
+        0..=1 => {
+            let mut packages = Vec::new();
+            packages.push(data);
+            packages
+        },
+        _ => {
+            let mut packages: Vec<Package> = from_reader(BufReader::new(&mut file)).unwrap();
+            if is_package_installed(&data.package).exists {
+                println!("{:?}, {}", packages, is_package_installed(&data.package).index);
+                packages.remove(is_package_installed(&data.package).index);
+            };
+            packages.push(data);
+            packages
+        },
+    };
+
+    let s = to_string_pretty(&installedpkglist, PrettyConfig::default()).expect("cannot deserialize");
+    file.seek(SeekFrom::Start(0)).unwrap();
+    file.write_all(s.as_bytes()).expect("failed to write to file");
 }
 
 fn get_package(name: &str) -> Option<Package> {
@@ -54,6 +125,9 @@ pub fn update() {
     println!("updating package list");
     download("https://raw.githubusercontent.com/jmlisowski/rupm-packages/main/packages.ron", filepath);
 }
+pub fn upgrade() {
+    todo!()
+}
 fn extract(filename: &str) -> io::Result<()> {
     let path = filename;
     let tar = File::open(path)?;
@@ -75,6 +149,7 @@ pub fn install(pkg: &str) {
             extract(filename).expect("failed to extract tarball");
             println!("cleaning up");
             remove_file(filename).expect("failed to remove file");
+            add_installed_package(pkg.package, pkg.version);
         }
         None => {
             println!("{}",format!("{} is not a package!",pkg).red().bold());
