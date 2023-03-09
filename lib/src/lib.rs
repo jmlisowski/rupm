@@ -36,7 +36,6 @@ struct Place {
     exists: bool,
     index: usize,
 }
-
 fn is_package_installed(package: &String) -> Place {
     let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/installedpackages.ron").into();
     let mut file = OpenOptions::new()
