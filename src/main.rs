@@ -25,6 +25,8 @@ fn main() {
             lib::update();
         } else if &args[1] == "upgrade" {
             lib::upgrade();
+        } else if &args[1] == "list" {
+            lib::list();
         } else {
             println!("{} '{}'", "couldn't recognize command".red().bold(), &args[1].red().bold());
             lib::help();

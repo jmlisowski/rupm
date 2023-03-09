@@ -36,6 +36,7 @@ struct Place {
     exists: bool,
     index: usize,
 }
+
 fn is_package_installed(package: &String) -> Place {
     let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/installedpackages.ron").into();
     let mut file = OpenOptions::new()
@@ -172,10 +173,23 @@ pub fn remove(pkg: &str) {
         }
     }
 }
+pub fn list() {
+    let filepath: PathBuf = (rupmdir().to_string_lossy().to_string() + "/installedpackages.ron").into();
+    let mut file = OpenOptions::new()
+        .read(true)        
+        .open(&filepath)
+        .unwrap();
+    let packages: Vec<Package> = from_reader(BufReader::new(&mut file)).unwrap();
+    for pkg in packages {
+        println!("{}", pkg.package);
+    }
+}
 pub fn help() {
     println!("Commands for rupm:
     help | displays help
+    list | lists installed packages
     update | updates package list
+    upgrade | upgrades installed packages
     install [package name] | installs a package
     remove [package name] | removes a package");
 }
